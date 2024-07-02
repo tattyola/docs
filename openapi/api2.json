@@ -1,0 +1,1080 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "asset",
+      "x-displayName": "Asset"
+    }
+  ],
+  "x-tagGroups": [
+    {
+      "name": "Public API services",
+      "tags": [
+        "asset"
+      ]
+    }
+  ],
+  "paths": {
+    "/2021-11-15/{id}": {
+      "get": {
+        "tags": [
+          "asset"
+        ],
+        "summary": "Get asset by identification",
+        "description": "Gets an asset if you have permission to see it.",
+        "operationId": "Get Asset by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Asset's identification. This is typically the VIN for vehicles.",
+            "required": true,
+            "schema": null,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BDResponseAssetByIdDetailResponseJson"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BDResponseHTTP"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BDBaseResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BDBaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BDResponseHTTP"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BDResponseCommonObject": {
+        "required": [
+          "__bd",
+          "errors",
+          "success",
+          "targetUrl",
+          "unauthorizedRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "__bd": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BDResponseErrorAlerts"
+            }
+          }
+        }
+      },
+      "BDResponseErrorAlerts": {
+        "required": [
+          "errorCode",
+          "errorType",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "errorType": {
+            "type": "string",
+            "enum": [
+              "GENERIC",
+              "VALIDATION"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          }
+        }
+      },
+      "BDPageRequest": {
+        "required": [
+          "page",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Page index. Pages are 0-index based.",
+            "format": "int32",
+            "example": 0
+          },
+          "size": {
+            "maximum": 200,
+            "minimum": 5,
+            "type": "integer",
+            "description": "Number of elements per page.",
+            "format": "int32",
+            "example": 10
+          },
+          "direct": {
+            "type": "boolean"
+          },
+          "sort": {
+            "type": "array",
+            "description": "Sort parameters.",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "token": {
+            "type": "string"
+          },
+          "query": {
+            "$ref": "#/components/schemas/BDQuery"
+          }
+        }
+      },
+      "BDQuery": {
+        "required": [
+          "field",
+          "qualifier",
+          "values"
+        ],
+        "type": "object",
+        "properties": {
+          "qualifier": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "IS_EQUAL",
+              "OR",
+              "AND",
+              "NOT",
+              "BEFORE",
+              "AFTER",
+              "IN",
+              "NOT_IN",
+              "IS_NULL",
+              "IS_NOT_NULL",
+              "LESS_THAN",
+              "LESS_THAN_EQUAL",
+              "GREATER_THAN",
+              "GREATER_THAN_EQUAL",
+              "CONTAINING",
+              "ENDS_WITH",
+              "STARTS_WITH",
+              "TRUE",
+              "FALSE",
+              "BETWEEN",
+              "ARRAY_CONTAINS",
+              "STRING_EQUALS",
+              "NOT_CONTAINING"
+            ]
+          },
+          "field": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "leftQuery": {
+            "$ref": "#/components/schemas/BDQuery"
+          },
+          "rightQuery": {
+            "$ref": "#/components/schemas/BDQuery"
+          }
+        },
+        "description": "Query details for requested information. See https://dev.azure.com/BrightDrop/BrightDrop/_wiki/wikis/BrightDrop.wiki/1374/Search-Filter-API-for-CosmosDB for more details."
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          },
+          "sorted": {
+            "type": "boolean"
+          }
+        },
+        "description": "Sort parameters."
+      },
+      "AlertDTO": {
+        "required": [
+          "createDateTime",
+          "event",
+          "organizationId",
+          "profileId",
+          "subscriptionId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique generated identifying ID.",
+            "format": "uuid",
+            "example": "9d3cb5e9-325b-4460-86af-c1e926bc6503"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "subscriptionId": {
+            "type": "string",
+            "description": "ID of base subscription for alert.",
+            "format": "uuid",
+            "example": "cd6e14d3-7ed3-4e2c-baf4-4fca26ba80fd"
+          },
+          "event": {
+            "$ref": "#/components/schemas/Event"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "de22af3a-8ec7-4f82-85b9-e2b2127e7399"
+          },
+          "createDateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "An alert is a message resulting from an undesirable event occurring."
+      },
+      "BDPageAlertDTO": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlertDTO"
+            }
+          },
+          "total_items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "BDResponseCommonBDPageAlertDTO": {
+        "required": [
+          "__bd",
+          "errors",
+          "success",
+          "targetUrl",
+          "unauthorizedRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/BDPageAlertDTO"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "__bd": {
+            "type": "boolean"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BDResponseErrorAlerts"
+            }
+          }
+        }
+      },
+      "Event": {
+        "required": [
+          "applicationId",
+          "category",
+          "event",
+          "eventTimestamp",
+          "sourceId",
+          "sourceType"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "sourceInstance": {
+            "type": "object"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "eventTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contentVariableMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "returnUrl": {
+            "type": "string"
+          }
+        },
+        "description": "Primary identifier to denote the action that raised the alert. See https://dev.azure.com/BrightDrop/BrightDrop/_wiki/wikis/BrightDrop.wiki/1260/0012a-Alerts for information about well know events.",
+        "example": "lowbattery"
+      },
+      "BDResponseErrorAssets": {
+        "required": [
+          "errorCode",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorType": {
+            "type": "string",
+            "enum": [
+              "GENERIC",
+              "VALIDATION"
+            ]
+          }
+        }
+      },
+      "BDResponseHTTP": {
+        "required": [
+          "targetUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BDResponseErrorAssets"
+            }
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/LegacyBDResponseError"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LegacyBDResponseError": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "validationErrors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyValidationError"
+            }
+          }
+        }
+      },
+      "LegacyValidationError": {
+        "required": [
+          "fieldName",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "BDBaseResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object"
+          },
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "validationErrors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "AssetByIdDetailResponseJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Asset id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Asset name"
+          },
+          "hardwareId": {
+            "type": "string",
+            "description": "Asset's hardware id such as a VIN."
+          },
+          "fleet": {
+            "$ref": "#/components/schemas/FleetResponseJson"
+          },
+          "hub": {
+            "$ref": "#/components/schemas/HubResponseJson"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/OrganizationResponseJson"
+          },
+          "state": {
+            "$ref": "#/components/schemas/StateResponseJson"
+          },
+          "status": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatusValueResponseJson"
+            },
+            "description": "Asset status"
+          },
+          "type": {
+            "$ref": "#/components/schemas/TypeResponseJson"
+          },
+          "configuration": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "description": "Asset configuration"
+            },
+            "description": "Asset configuration"
+          },
+          "capabilities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "description": "Asset capabilities"
+            },
+            "description": "Asset capabilities"
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "Asset timezone. This is inherited from the fleet."
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Asset creation date",
+            "format": "date-time"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "description": "Asset last updated time",
+            "format": "date-time"
+          },
+          "ready": {
+            "type": "string",
+            "description": "Asset readiness",
+            "enum": [
+              "ready",
+              "not_ready",
+              "unknown"
+            ]
+          },
+          "faultCount": {
+            "type": "integer",
+            "description": "Asset fault count",
+            "format": "int64"
+          },
+          "parent": {
+            "type": "string",
+            "description": "Asset parent"
+          },
+          "host": {
+            "type": "string",
+            "description": "Asset host"
+          },
+          "diagnostics": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DiagnosticsValueResponseJson"
+            }
+          },
+          "offlineAccessToken": {
+            "type": "string"
+          }
+        }
+      },
+      "BDResponseAssetByIdDetailResponseJson": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AssetByIdDetailResponseJson"
+          },
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DiagnosticsValueResponseJson": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "boolean"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "mil": {
+            "type": "boolean"
+          },
+          "deviceTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FleetResponseJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Fleet id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Fleet name"
+          }
+        },
+        "description": "Fleet that an asset is associated with."
+      },
+      "HubResponseJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Hub id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Hub name"
+          }
+        },
+        "description": "Hub that an asset is associated with."
+      },
+      "OrganizationResponseJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Organization id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Organization name"
+          }
+        },
+        "description": "Organization that an asset is associated with."
+      },
+      "StateResponseJson": {
+        "type": "object",
+        "properties": {
+          "connectivity": {
+            "type": "string"
+          },
+          "diagnostic": {
+            "type": "string"
+          },
+          "availability": {
+            "type": "string"
+          },
+          "safetyCompliant": {
+            "type": "boolean"
+          },
+          "mil": {
+            "type": "string"
+          },
+          "provisioning": {
+            "type": "string"
+          },
+          "homeLocationCompliant": {
+            "type": "boolean"
+          },
+          "chargingScheduleCompliant": {
+            "type": "boolean"
+          }
+        },
+        "description": "Asset state"
+      },
+      "StatusValueResponseJson": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "object"
+          },
+          "deviceTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Asset status"
+      },
+      "TypeResponseJson": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "description": "Asset type"
+      },
+      "BDResponseError": {
+        "required": [
+          "errorCode",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errorType": {
+            "type": "string",
+            "enum": [
+              "GENERIC",
+              "VALIDATION"
+            ]
+          }
+        }
+      },
+      "BDResponseHTTPVoid": {
+        "required": [
+          "targetUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BDResponseError"
+            }
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "error": {
+            "$ref": "#/components/schemas/LegacyBDResponseError"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BDResponseVoid": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "result": {
+            "type": "object"
+          },
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BDResponseCommonObjectProfile": {
+        "required": [
+          "__bd",
+          "errors",
+          "success",
+          "targetUrl",
+          "unauthorizedRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "__bd": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "result": {
+            "type": "object"
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BDResponseError"
+            }
+          }
+        }
+      },
+      "AddressJson": {
+        "type": "object",
+        "properties": {
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        }
+      },
+      "AppSettingsJson": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "primarySecret": {
+            "$ref": "#/components/schemas/Secret"
+          },
+          "secondarySecret": {
+            "$ref": "#/components/schemas/Secret"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "BDResponseProfileResponseJson": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "targetUrl": {
+            "type": "string"
+          },
+          "unauthorizedRequest": {
+            "type": "boolean"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ProfileResponseJson"
+          },
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          },
+          "__bd": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EligibleAssetTypeJson": {
+        "required": [
+          "model",
+          "provider",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          }
+        }
+      },
+      "HierarchyObjectViewJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ProfileResponseJson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressJson"
+          },
+          "status": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/HierarchyObjectViewJson"
+          },
+          "hub": {
+            "$ref": "#/components/schemas/HierarchyObjectViewJson"
+          },
+          "fleet": {
+            "$ref": "#/components/schemas/HierarchyObjectViewJson"
+          },
+          "eligibleAssetTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligibleAssetTypeJson"
+            }
+          },
+          "userPreferences": {
+            "$ref": "#/components/schemas/UserPreferencesJson"
+          },
+          "type": {
+            "type": "string"
+          },
+          "appSettings": {
+            "$ref": "#/components/schemas/AppSettingsJson"
+          }
+        }
+      },
+      "Secret": {
+        "type": "object",
+        "properties": {
+          "startDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "secretText": {
+            "type": "string"
+          },
+          "hint": {
+            "type": "string"
+          }
+        }
+      },
+      "UserPreferencesJson": {
+        "required": [
+          "locale"
+        ],
+        "type": "object",
+        "properties": {
+          "locale": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
