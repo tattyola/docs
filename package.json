@@ -17,6 +17,7 @@
   "dependencies": {
     "@docusaurus/preset-classic": "^3.4.0",
     "docusaurus": "^1.14.7",
+    "docusaurus-theme-redoc": "^2.1.1",
     "redocusaurus": "^2.1.1"
   },
   "browserslist": {
